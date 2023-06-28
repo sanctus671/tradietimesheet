@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="co.nz.tradietimesheet.app" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="co.nz.tradietimesheet.app" version="0.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Tradie Timesheet</name>
     <description>An app for digitalizing timesheet tracking.</description>
     <author email="taylor@taylorhamling.com" href="https://www.taylorhamling.com/">Taylor Hamling</author>
@@ -119,4 +119,5 @@
     <plugin name="cordova-plugin-inappbrowser" spec="^4.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.2.0" />
     <plugin name="cordova-plugin-ionic-webview" spec="^5.0.0" />
+    <engine name="android" />
 </widget>

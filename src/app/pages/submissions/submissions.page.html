@@ -1,0 +1,59 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>
+            Submissions
+        </ion-title>        
+        
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="submissions">
+    
+    
+
+
+        
+    <div class="submissions__loading" *ngIf="loading">
+        <ion-spinner color="primary"></ion-spinner>
+    </div>    
+        
+  
+    
+    <div *ngIf="!loading">
+        
+        
+        
+        <ion-list class="submissions__list" *ngFor="let week of weeks">
+
+            
+            <ion-list-header>
+                Week of {{formatDate(week)}}
+            </ion-list-header>            
+            
+            <div  *ngFor="let submission of submissionsByWeek[week]">
+                
+                <ion-item detail [routerLink]="['/timesheet-date']" [queryParams]="{date : formatDatabase(submission.submission_date)}" routerDirection="forward">
+                    <ion-label>
+                        <h2>{{formatLongDate(submission.submission_date)}}</h2>
+                    </ion-label>
+                </ion-item>                  
+                
+                
+                
+            </div>
+                  
+                  
+            <div class="submissions__list__total">
+                Total work time is {{calculateWorkTime(week)}}
+            </div>      
+
+
+        </ion-list>          
+        
+        
+   
+    </div> 
+
+
+    
+</ion-content>

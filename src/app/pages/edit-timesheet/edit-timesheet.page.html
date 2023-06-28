@@ -1,0 +1,74 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/timesheet"></ion-back-button>
+        </ion-buttons>          
+        
+        
+        <ion-title>
+            {{formatLongDate(timesheet.submission_date)}}
+        </ion-title>      
+        
+        
+        <ion-buttons slot="end">
+            <ion-button (click)="deleteSubmission()">
+                <ion-icon slot="start" name="trash"></ion-icon> 
+                Delete
+            </ion-button>   
+            
+        </ion-buttons>       
+        
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="edit-submission">
+    
+    
+    <div class="edit-submission__loading" *ngIf="loading">
+        <ion-spinner color="primary"></ion-spinner>
+    </div> 
+    
+ 
+    <ion-list>
+<ion-item>
+  <ion-label>Start Time</ion-label>
+  <ion-datetime displayFormat="HH:mm" [(ngModel)]="timesheet.start_time_raw" name="start_time" [max]="timesheet.end_time_raw" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55"></ion-datetime>
+</ion-item>   
+    
+
+<ion-item>
+  <ion-label>End Time</ion-label>
+  <ion-datetime displayFormat="HH:mm" [(ngModel)]="timesheet.end_time_raw" name="end_time" [min]="timesheet.start_time_raw"  minuteValues="0,5,10,15,20,25,30,35,40,45,50,55"></ion-datetime>
+</ion-item> 
+
+        
+        <ion-item>
+  <ion-label position="floating">{{fieldLabels.site_name}}</ion-label>
+  <ion-input [(ngModel)]="timesheet.site_name" name="site_name"></ion-input>
+</ion-item>
+        
+        
+        <ion-item>
+  <ion-label position="floating">{{fieldLabels.total_rubbish}}</ion-label>
+  <ion-input [(ngModel)]="timesheet.total_rubbish" name="total_rubbish"></ion-input>
+</ion-item>
+        
+<ion-item>
+  <ion-label position="floating">{{fieldLabels.comments}}</ion-label>
+  <ion-textarea [(ngModel)]="timesheet.comments" name="comments"></ion-textarea>
+</ion-item>        
+    </ion-list>
+    
+</ion-content>
+
+
+
+<ion-footer class="add-timesheet-footer">
+    
+
+    <ion-button color='primary' expand="full" class="add-timesheet-footer__button" (click)="save()">
+        Update
+        <ion-icon name="arrow-forward" *ngIf="!loading"></ion-icon>
+        <ion-spinner *ngIf="loading"></ion-spinner>
+    </ion-button>
+</ion-footer>

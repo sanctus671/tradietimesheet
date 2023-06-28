@@ -1,0 +1,7 @@
+{
+  "name": "tradietimesheet",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

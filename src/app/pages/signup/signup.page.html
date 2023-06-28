@@ -1,0 +1,58 @@
+<ion-header >
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/start"></ion-back-button>
+        </ion-buttons>     
+        <ion-title>Sign Up</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="signup">
+    
+   
+    
+    <ion-list class="signup__form">
+        
+        
+        <ion-item [ngClass]="{'invalidItem' : !user.email && this.user.error}">
+            <ion-label position="floating">Email *</ion-label>
+            <ion-input clearInput type="email" [(ngModel)]="user.email"></ion-input>
+        </ion-item>
+
+        <ion-item [ngClass]="{'invalidItem' : !user.name && this.user.error}">
+            <ion-label position="floating">Name *</ion-label>
+            <ion-input clearInput type="email" [(ngModel)]="user.name"></ion-input>
+        </ion-item>        
+        
+        
+        <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input clearInput type="password" [(ngModel)]="user.password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label position="floating">Confirm Password</ion-label>
+            <ion-input clearInput type="password" [(ngModel)]="user.confirm_password"></ion-input>
+        </ion-item>
+
+    
+
+        
+        <p class="signup__form__error" *ngIf="user.error">{{user.error}}</p>
+
+    </ion-list>  
+    
+    
+</ion-content>
+
+
+<ion-footer class="signup-footer">
+    
+
+
+    <ion-button color='primary' expand="full" class="signup-footer__button" [disabled]="user.loading" (click)="signup()">
+        Get Started&nbsp;&nbsp;
+        <ion-icon name="arrow-forward" *ngIf="!user.loading"></ion-icon>
+        <ion-spinner *ngIf="user.loading"></ion-spinner>
+    </ion-button>
+</ion-footer>

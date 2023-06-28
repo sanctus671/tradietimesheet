@@ -1,0 +1,167 @@
+.invalidItem {
+--full-highlight-height: calc(var(--highlight-height) * var(--show-full-highlight));
+--inset-highlight-height: calc(var(--highlight-height) * var(--show-inset-highlight));
+--border-color: var(--ion-item-border-color,var(--ion-border-color,red));
+}
+
+.signup{
+    
+    
+    
+    .signup__stepper{
+        margin-top:15px;
+        margin-bottom:15px;
+        .step{
+            display: inline-block;
+            width: 33.33%;
+            text-align: center;
+            vertical-align: top;
+            padding: 0px 15px;
+            opacity:0.5;
+            transition:opacity 200ms linear;
+            
+            &.step--active{
+                opacity:1;
+            }
+            
+            .step__number{
+                width: 30px;
+                height: 30px;
+                background-color:#40c873;
+                border-radius: 15px;
+                color: White;
+                font-size: 10px;
+                text-align: center;
+                line-height: 30px;
+                    margin: 0 auto;
+            }
+            
+            
+            .step__name{
+                font-size: 12px;
+            }
+            
+        }
+        
+        
+        
+        
+    }
+    
+    
+    .signup__user-type{
+        
+        
+        p{
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0px;
+        }
+        
+        .signup__user-type__card{
+            text-align:center;
+            padding: 0px;
+            border: 2px solid #40c873;
+            background-color:White;
+            transition:background-color 200ms linear;
+           
+            
+            ion-card-title{
+                color:#40c873;
+            }
+            
+            &.signup__user-type__card--active{
+                background-color:#40c873;
+                
+                ion-card-title{
+                    color:White;
+                }
+                
+            }
+        }
+        
+        
+    }
+    
+
+
+    .signup__form{
+        
+        
+        
+        .signup__form__avatar{
+                margin-top: 15px;
+            margin-bottom:5px;
+            ion-icon{
+width: 20px;
+    height: 20px;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #40c873;
+    color: white;
+    margin-bottom: 10px;
+            }
+
+            ion-avatar{
+                margin-bottom:10px;
+            }
+
+            ion-button{
+    margin-left: 15px;
+    vertical-align: middle;
+    margin-bottom: 15px;
+            }
+        }        
+
+
+            .signup__form__error{
+                color: red;
+                font-size: 12px;
+                line-height: 16px;   
+                text-align:Center;
+            }
+
+
+            .signup__form__login{
+                margin-top:40px;  
+                text-align:Center;
+            }
+
+
+        }
+        
+        
+.custom-checkbox {    
+  ion-checkbox {
+    position:relative;
+  }
+  
+  ion-label{
+      white-space: normal;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}        
+    
+}
+
+.signup-footer{
+    background-color:white;
+    
+    &:before{
+        display:none;
+    }
+    
+        .signup-footer__button{
+
+            ion-spinner{
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                margin-left: 5px;                
+            }
+        }    
+    
+    
+    
+}

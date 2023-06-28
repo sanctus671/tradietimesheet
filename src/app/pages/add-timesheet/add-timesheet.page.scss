@@ -1,0 +1,20 @@
+.add-timesheet-footer{
+    background-color:white;
+    
+    &:before{
+        display:none;
+    }
+    
+        .add-timesheet-footer__button{
+
+            ion-spinner{
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                margin-left: 5px;                
+            }
+        }    
+    
+    
+    
+}

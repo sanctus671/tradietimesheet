@@ -1,0 +1,77 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/timesheet"></ion-back-button>
+        </ion-buttons>          
+        
+        
+        <ion-title>
+            {{selectedDate ? formatLongDate(selectedDate) : ''}}
+        </ion-title>          
+        
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    
+        <ion-list class="submissions__list" *ngIf="submissions.length > 0">
+
+            
+            <ion-list-header>
+                Unsubmitted Timesheets
+            </ion-list-header>            
+            
+            <ion-item detail *ngFor="let submission of submissions" [routerLink]="['/edit-timesheet']" [queryParams]="{date : formatDatabase(submission.submission_date), start_time:submission.start_time, end_time:submission.end_time}" routerDirection="forward">
+                <ion-label>
+                    <h2><strong>{{submission.start_time}} - {{submission.end_time}}</strong></h2>
+                    <h4 *ngIf="submission.site_name">{{submission.site_name}}</h4>
+                    <p>Added {{formatFromNow(submission.created_at)}}</p>
+                </ion-label>
+            </ion-item>       
+
+
+        </ion-list>          
+        
+        
+        <ion-list class="submissions__list" *ngIf="submittedSubmissions.length > 0">
+
+            
+            <ion-list-header *ngIf="submissions.length > 0 && submittedSubmissions.length > 0">
+                Submitted Timesheets
+            </ion-list-header>               
+            
+            <ion-item detail *ngFor="let submittedSubmission of submittedSubmissions; let i = index" [routerLink]="['/submission/' + submittedSubmission.id]" routerDirection="forward"
+                      class="submissions__list__item" >
+                <ion-label>
+                    <h2><strong>{{submittedSubmission.start_time}} - {{submittedSubmission.end_time}}</strong></h2>
+                    <h4 *ngIf="submittedSubmission.site_name">{{submittedSubmission.site_name}}</h4>
+                    <p>Submitted {{formatFromNowServer(submittedSubmission.created_at)}}</p>
+                </ion-label>
+            </ion-item>       
+      
+            
+
+        </ion-list> 
+    
+    
+    <div class='timesheet__total-time' *ngIf="submittedSubmissions.length > 0 || submissions.length > 0">
+        
+        <h6>Total work time is <span>{{formatMinutes(totalWorkTime)}}</span></h6>
+        
+        <span>{{breakTime}} minute daily break</span>
+        
+    </div>
+
+    
+</ion-content>
+
+
+
+
+<ion-footer class="add-timesheet-footer">
+    
+
+    <ion-button color='primary' expand="full" class="add-timesheet-footer__button" [routerLink]="['/add-timesheet']" [queryParams]="{date : formatDatabase(selectedDate)}" routerDirection="forward">
+        Add Timesheet
+    </ion-button>
+</ion-footer>

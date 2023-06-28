@@ -1,0 +1,32 @@
+.submissions{
+    
+    
+    
+    .submissions__list{
+margin-top: 5px;
+margin-bottom:15px;
+    border-bottom: 1px solid #dedede;
+    padding-bottom: 40px;
+        
+        ion-list-header{
+                font-weight: 600;
+                font-size: 16px;
+        }
+        
+        .submissions__list__total{
+            padding: 0px 15px;
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: 14px;
+        }
+        
+    }
+    
+    
+    
+    .submissions__loading{
+        text-align: center;
+        margin-top: 60px;        
+    }
+   
+}

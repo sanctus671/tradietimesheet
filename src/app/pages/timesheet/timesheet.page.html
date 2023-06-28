@@ -1,0 +1,81 @@
+<ion-header class="timesheet-header">
+    <ion-toolbar color="primary">
+        <ion-title>
+            <img [src]="appSettings.logo ? appSettings.logo : '/assets/logo-light.png'" class="timesheet-header__logo" />
+        </ion-title>
+        
+        <div class="timesheet-header__business" slot="end" *ngIf="appSettings.name">
+                {{appSettings.name}}
+            
+        </div>            
+        
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class='timesheet'>
+    
+    <div class="timesheet__navigation">
+        
+        <a class="timesheet__navigation__arrow timesheet__navigation__arrow--left" (click)="previousWeek()"><ion-icon name="ios-arrow-back"></ion-icon></a>
+        
+        <div class="timesheet__navigation__week" (click)="datePicker.open()">Week {{formatDate(currentWeek)}}</div>
+        
+        <a class="timesheet__navigation__arrow timesheet__navigation__arrow--right" 
+           [ngClass]="{'timesheet__navigation__arrow--disabled' : !displayForward(currentWeek)}"
+           (click)="nextWeek()"><ion-icon name="ios-arrow-forward"></ion-icon></a>
+        
+        
+    </div>
+    
+    <ion-datetime class="timesheet__datepicker" hidden="true" #datePicker (ionChange)="dateChanged($event)" displayFormat="DD MMM, YYYY" [max]="maxSelectableDate" [(ngModel)]="selectedDate"></ion-datetime>
+    
+    <div class="timesheet__submission" *ngIf="pendingSubmissions > 0">
+        
+        <ion-button color="primary" (click)="submitWeek()">Submit Week</ion-button>
+        
+        <ion-button color="primary" fill="outline" (click)="resetWeek()">Reset</ion-button>
+        
+    </div>
+    
+    
+    
+    <div class="timesheet__timesheets">
+        
+
+        
+        <div class="timesheet__timesheets__day" *ngFor="let weekday of weekdays" [routerLink]="[(weekdaySubmissions[formatDatabase(weekday)] || weekdaySubmittedSubmissions[formatDatabase(weekday)] ? '/timesheet-date' : '/add-timesheet')]" 
+             [queryParams]="{date : formatDatabase(weekday)}" routerDirection="forward" 
+             [ngClass]="{'timesheet__timesheets__day--current' : isCurrentDate(weekday)}"
+             [ngStyle]="{'color':(isCurrentDate(weekday) ? 'white' : appSettings.color_scheme), 'background-color':(isCurrentDate(weekday) ? appSettings.color_scheme : ''), 'border-color' : appSettings.color_scheme}">
+            
+
+            <h6>{{formatLongDate(weekday)}}</h6>
+            
+            <ion-icon name='checkmark-circle' *ngIf="weekdaySubmissions[formatDatabase(weekday)] || weekdaySubmittedSubmissions[formatDatabase(weekday)]"></ion-icon>
+<!--            <p *ngIf="weekdaySubmissions[formatDatabase(weekday)] && !weekdaySubmittedSubmissions[formatDatabase(weekday)]">Added {{formatFromNow(weekdaySubmissions[formatDatabase(weekday)].created_at)}}</p>
+            <p *ngIf="weekdaySubmittedSubmissions[formatDatabase(weekday)]">Submitted {{formatFromNowServer(weekdaySubmittedSubmissions[formatDatabase(weekday)].created_at)}}</p>
+            <p *ngIf="!weekdaySubmittedSubmissions[formatDatabase(weekday)] && !weekdaySubmissions[formatDatabase(weekday)]">No timesheet added</p>
+            
+            
+            <a [ngStyle]="{color:appSettings.color_scheme}"  *ngIf="!weekdaySubmittedSubmissions[formatDatabase(weekday)] && !weekdaySubmissions[formatDatabase(weekday)]">Add Timesheet <ion-icon slot="end" name="ios-arrow-forward"></ion-icon></a>
+            
+            
+            <a [ngStyle]="{color:appSettings.color_scheme}" [routerLink]="['/edit-timesheet']" [queryParams]="{date : formatDatabase(weekday)}" routerDirection="forward" *ngIf="weekdaySubmissions[formatDatabase(weekday)] && !weekdaySubmittedSubmissions[formatDatabase(weekday)]">Edit Timesheet <ion-icon slot="end" name="ios-arrow-forward"></ion-icon></a>
+            
+            <a [ngStyle]="{color:appSettings.color_scheme}" [routerLink]="['/submission/' + weekdaySubmittedSubmissions[formatDatabase(weekday)].id]"  routerDirection="forward" *ngIf="weekdaySubmittedSubmissions[formatDatabase(weekday)]">View Timesheet <ion-icon slot="end" name="ios-arrow-forward"></ion-icon></a>
+      -->  
+</div>
+    </div>
+    
+    
+    <div class='timesheet__total-time'>
+        
+        <h6>Total work time is <span>{{formatMinutes(totalWorkTime)}}</span></h6>
+        
+        <span>{{breakTime}} minute daily breaks</span>
+        
+    </div>
+    
+    
+
+</ion-content>
