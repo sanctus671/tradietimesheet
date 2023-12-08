@@ -32,7 +32,7 @@ export class TimesheetPage implements OnInit {
     constructor(private authenticationService:AuthenticationService, private submissionService:SubmissionService, private ngZone: NgZone, 
         private loadingController: LoadingController, private alertCtrl : AlertController, private platform: Platform, private statusBar: StatusBar) { 
     
-        this.appSettings = {name:"", color_scheme: '', logo: '', field_labels:""};
+        this.appSettings = {name:"", color_scheme: '', logo: '', field_labels:"", week_start:"", break_toggle:false};
         
         this.maxSelectableDate = moment().format("YYYY-MM-DD");
         
@@ -47,17 +47,7 @@ export class TimesheetPage implements OnInit {
         
         this.breakTime = 30;
         
-        this.currentWeek = moment().startOf("week");
-        if (this.currentWeek.format("dddd") === "Sunday"){
-			if (moment().format("dddd") === "Sunday"){
-				this.currentWeek.subtract(6, "days");
-			}
-			else{
-				this.currentWeek.add(1, "days");
-			}
-            
-        }
-        this.selectedDate = this.currentWeek.toISOString();
+        this.setStartOfWeek();
         
         this.setWeekdays();
         this.getSubmissions();
@@ -74,8 +64,11 @@ export class TimesheetPage implements OnInit {
                 if (this.user.groups.length > 0){
                     
                     this.ngZone.run(() => {
+
+                        let previousWeekStart = this.appSettings.week_start;
                     
                         this.appSettings = this.user.groups[0];
+              
 
                         if (this.appSettings.color_scheme){
                             this.setColorScheme();
@@ -83,7 +76,12 @@ export class TimesheetPage implements OnInit {
                         }
                         
                         if (this.appSettings.break_time){
-                            this.breakTime = this.appSettings.break_time;
+                            this.breakTime = parseFloat(this.appSettings.break_time);
+                        }
+
+                        if (this.appSettings.week_start && this.appSettings.week_start !== previousWeekStart){
+                            this.setStartOfWeek();
+                            this.setWeekdays();
                         }
                     
                     });
@@ -111,6 +109,7 @@ export class TimesheetPage implements OnInit {
             this.setColorScheme();
         }    
     }
+
     
     
     public calculateWorkTime(){
@@ -123,6 +122,9 @@ export class TimesheetPage implements OnInit {
         
             let weekdayDate = this.formatDatabase(weekday);
             let dailyWorkTime = 0;
+
+            let dailyNoBreakCount = 0;
+            let dailySubmissionCount = 0;
             
             for (let submission of this.submissions){
 
@@ -132,6 +134,9 @@ export class TimesheetPage implements OnInit {
                     let workTime = moment.duration(moment(endDate).diff(moment(startDate))).asMinutes();
 
                     dailyWorkTime += workTime;
+
+                    if (submission.no_break){dailyNoBreakCount += 1}
+                    dailySubmissionCount += 1;
                 }
             }
             
@@ -146,6 +151,10 @@ export class TimesheetPage implements OnInit {
 
                     dailyWorkTime += workTime;
 
+
+                    if (submission.no_break){dailyNoBreakCount += 1}
+                    dailySubmissionCount += 1;
+
                 }
                 
             }            
@@ -154,6 +163,12 @@ export class TimesheetPage implements OnInit {
             if (dailyWorkTime > 0){
                 //subtract breaks
                 dailyWorkTime = dailyWorkTime - this.breakTime;
+
+
+                if (dailyNoBreakCount > 0 && dailySubmissionCount === dailyNoBreakCount){
+                    dailyWorkTime = dailyWorkTime + this.breakTime; 
+                }
+
                 if (dailyWorkTime < 0){dailyWorkTime = 0;}
             }
             
@@ -169,6 +184,92 @@ export class TimesheetPage implements OnInit {
         
     }
     
+
+    public setStartOfWeek(){
+     
+
+
+        let startDay = this.appSettings.week_start ? this.appSettings.week_start : "Monday";
+   
+
+        let currentWeekStart = moment().startOf("week").day(startDay);
+        let currentDay = moment();
+        if (currentWeekStart.isAfter(currentDay)){
+            currentWeekStart.subtract(1, "weeks");
+        }
+
+    
+
+        this.currentWeek = moment(currentWeekStart);
+        
+
+        /*
+        let previousDay = currentWeekStart.subtract(1, "days").format("dddd");
+
+        if (this.currentWeek.format("dddd") === previousDay){
+			if (moment().format("dddd") === previousDay){
+                //TODO: respond to start of date being not Monday. Ie if its tuesday subtract only 5 days etc..
+                if (this.appSettings.week_start === "Tuesday"){
+                    this.currentWeek.subtract(5, "days");
+                }
+                else if (this.appSettings.week_start === "Wednesday"){
+                    this.currentWeek.subtract(4, "days");
+                }
+                else if (this.appSettings.week_start === "Thursday"){
+                    this.currentWeek.subtract(3, "days");
+                }
+                else if (this.appSettings.week_start === "Friday"){
+                    this.currentWeek.subtract(2, "days");
+                }
+                else if (this.appSettings.week_start === "Saturday"){
+                    this.currentWeek.subtract(1, "days");
+                }
+                else if (this.appSettings.week_start === "Sunday"){
+                    //this.currentWeek.subtract(6, "days");
+                }
+                else{
+                    //Monday default
+                    this.currentWeek.subtract(6, "days");
+                }
+				
+			}
+			else{
+                //TODO: respond to start of date being not Monday. Ie if its tuesday add 2 days etc..
+
+                if (this.appSettings.week_start === "Tuesday"){
+                    this.currentWeek.add(2, "days");
+                }
+                else if (this.appSettings.week_start === "Wednesday"){
+                    this.currentWeek.add(3, "days");
+                }
+                else if (this.appSettings.week_start === "Thursday"){
+                    this.currentWeek.add(4, "days");
+                }
+                else if (this.appSettings.week_start === "Friday"){
+                    this.currentWeek.add(5, "days");
+                }
+                else if (this.appSettings.week_start === "Saturday"){
+                    this.currentWeek.add(6, "days");
+                }
+                else if (this.appSettings.week_start === "Sunday"){
+                    this.currentWeek.add(7, "days");
+                }
+                else{
+                    //Monday default
+                    this.currentWeek.add(1, "days");
+                }
+
+
+				
+			}
+            
+        }
+
+        */
+
+    
+        this.selectedDate = this.currentWeek.toISOString();
+    }
     
     
     
@@ -488,7 +589,9 @@ export class TimesheetPage implements OnInit {
     public dateChanged(ev){
         
 
-        
+   
+
+        /*
         this.currentWeek = moment(this.selectedDate).startOf("week");
         if (this.currentWeek.format("dddd") === "Sunday"){
 			if (moment(this.selectedDate).format("dddd") === "Sunday"){
@@ -499,7 +602,35 @@ export class TimesheetPage implements OnInit {
 			}
             
             
-        }  
+        } 
+        */
+
+        let startDay = this.appSettings.week_start ? this.appSettings.week_start : "Monday";
+        //TODO get day before startDay replace Sunday below
+
+        let currentWeekStart = moment(this.selectedDate).startOf("week").day(startDay);
+        let currentDay = moment(this.selectedDate);
+        if (currentWeekStart.isAfter(currentDay)){
+            currentWeekStart.subtract(1, "weeks");
+        }
+
+
+        this.currentWeek = moment(currentWeekStart);
+
+/*
+        if (this.currentWeek.format("dddd") === "Sunday"){
+			if (moment(this.selectedDate).format("dddd") === "Sunday"){
+				this.currentWeek.subtract(6, "days");
+			}
+			else{
+				this.currentWeek.add(1, "days");
+			}
+            
+            
+        } 
+*/
+
+        
         this.selectedDate = this.currentWeek.toISOString();
         
         this.setWeekdays();          
@@ -516,9 +647,9 @@ export class TimesheetPage implements OnInit {
     
     
     public previousWeek(){
+    
         this.currentWeek.subtract(1, "week");
         this.selectedDate = this.currentWeek.toISOString();
-        
         this.setWeekdays();          
         this.setWeekdaySubmittedSubmissions();
         this.setWeekdaySubmissions();

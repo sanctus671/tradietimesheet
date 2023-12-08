@@ -92,12 +92,6 @@ export class AuthenticationService {
                         this.storage.get("tt_user").then((data) => {
                             if (data && data.id !== res.id){
                                 this.storage.remove("tt_submissions");
-                                this.storage.remove("tt_online_submissions");
-                                this.storage.remove("tt_update_submissions");
-                                this.storage.remove("tt_document_groups");
-                                this.storage.remove("tt_documents");
-                                this.storage.remove("tt_form_groups");
-                                this.storage.remove("tt_forms");
                             }
                         })
                         this.storage.set("tt_user", res);
@@ -185,14 +179,14 @@ export class AuthenticationService {
                     this.http.post(environment.apiUrl + "/auth/logout?token=" + token,{}).subscribe((res) => {
                         
                         
-                        resolve();
+                        resolve(true);
                         
                     }, (e) => {
-                        resolve();
+                        resolve(true);
                     });   
                 }
                 else{
-                    resolve();
+                    resolve(true);
                 }
                 //this.storage.clear();
                 this.storage.remove("tt_token");

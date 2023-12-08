@@ -56,14 +56,27 @@
 <ion-item>
   <ion-label position="floating">{{fieldLabels.comments}}</ion-label>
   <ion-textarea [(ngModel)]="timesheet.comments" name="comments"></ion-textarea>
-</ion-item>        
+</ion-item>      
+
+
+<ion-item *ngIf="appSettings.break_toggle">
+    <ion-label>No Break</ion-label>
+    <ion-checkbox slot="end" [(ngModel)]="timesheet.no_break" name="no_break"></ion-checkbox>
+  </ion-item>
+  
+  
     </ion-list>
+
+
+<ion-button color='primary' expand="full" class="add-timesheet-footer__button" (click)="save()">
+    Update
+    <ion-icon name="arrow-forward" *ngIf="!loading"></ion-icon>
+    <ion-spinner *ngIf="loading"></ion-spinner>
+</ion-button>
     
 </ion-content>
 
-
-
-<ion-footer class="add-timesheet-footer">
+<!-- <ion-footer class="add-timesheet-footer">
     
 
     <ion-button color='primary' expand="full" class="add-timesheet-footer__button" (click)="save()">
@@ -71,4 +84,4 @@
         <ion-icon name="arrow-forward" *ngIf="!loading"></ion-icon>
         <ion-spinner *ngIf="loading"></ion-spinner>
     </ion-button>
-</ion-footer>
+</ion-footer> -->

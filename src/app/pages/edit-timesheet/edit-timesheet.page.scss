@@ -15,18 +15,21 @@
     
     &:before{
         display:none;
-    }
-    
-        .add-timesheet-footer__button{
-
-            ion-spinner{
-                font-size: 14px;
-                width: 14px;
-                height: 14px;
-                margin-left: 5px;                
-            }
-        }    
+    }   
     
     
     
 }
+    
+.add-timesheet-footer__button{
+    margin-top:30px;
+    margin-left:15px;
+    margin-right:15px;
+
+    ion-spinner{
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+        margin-left: 5px;                
+    }
+} 

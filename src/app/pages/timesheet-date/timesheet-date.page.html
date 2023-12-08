@@ -62,16 +62,24 @@
         
     </div>
 
+
+    
+
+    <ion-button color='primary' expand="full" class="add-timesheet-footer__button" [routerLink]="['/add-timesheet']" [queryParams]="{date : formatDatabase(selectedDate)}" routerDirection="forward">
+        Add Timesheet
+    </ion-button>
+
+
     
 </ion-content>
 
 
 
-
+<!-- 
 <ion-footer class="add-timesheet-footer">
     
 
     <ion-button color='primary' expand="full" class="add-timesheet-footer__button" [routerLink]="['/add-timesheet']" [queryParams]="{date : formatDatabase(selectedDate)}" routerDirection="forward">
         Add Timesheet
     </ion-button>
-</ion-footer>
+</ion-footer> -->

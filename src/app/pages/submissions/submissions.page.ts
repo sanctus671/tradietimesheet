@@ -28,13 +28,15 @@ export class SubmissionsPage  {
     public weeks:Array<any>;
     public submissionsByWeek:any;
     public workTimeByWeek:any;
-    
+    public appSettings:any;
     
     public breakTime:number;
     
     constructor(private submissionService:SubmissionService, public toastController: ToastController, public modalController: ModalController,
         private router: Router, private authenticationService:AuthenticationService, private alertCtrl: AlertController, private ngZone: NgZone,
         private platform:Platform) { 
+
+        this.appSettings = {name:"", color_scheme: '', logo: '', field_labels:"", week_start:"", break_toggle:false};
         
         this.loading = true;
         
@@ -55,11 +57,13 @@ export class SubmissionsPage  {
                 
             if (this.user.groups.length > 0){
                 let appSettings = this.user.groups[0];
+
+                this.appSettings = this.user.groups[0];
                 
                 this.ngZone.run(() => {
 
                     if (appSettings.break_time){
-                        this.breakTime = appSettings.break_time;
+                        this.breakTime = parseFloat(appSettings.break_time);
                     }
 
                 });
@@ -97,21 +101,31 @@ export class SubmissionsPage  {
     }
     
     public getSubmissions(){
+
+        
+
         this.submissionService.getLocalSubmissions().then((data:Array<any>) => {
         
             this.submissions = data;
-            
+
+            let startDay = this.appSettings.week_start ? this.appSettings.week_start : "Monday";
             
             for (let submission of this.submissions){
                 
-                let submissionDate = moment(submission.submission_date);
-                if (submissionDate.format("dddd") === "Sunday"){
-                    submissionDate.subtract(1, "days");
-                }                  
-                let submissionWeek = submissionDate.startOf("week");
-                if (submissionWeek.format("dddd") === "Sunday"){
-                    submissionWeek.add(1, "days");
-                } 
+                let submissionDate = moment(submission.submission_date).startOf("week").day(startDay);
+                let currentDay = moment(submission.submission_date);
+
+                if (submissionDate.isAfter(currentDay)){
+                    submissionDate.subtract(1, "weeks");
+
+                }
+
+
+                let submissionWeek = moment(submissionDate);
+
+
+
+
                 
                 let submissionWeekFormatted = submissionWeek.format("YYYY-MM-DD");
                 
@@ -164,14 +178,20 @@ export class SubmissionsPage  {
     
     
     public getSubmittedSubmissions(){
+
+        
+
         this.submissionService.getSubmissions().then((data:Array<any>) => {
           
             this.submittedSubmissions = data;
+
+            let startDay = this.appSettings.week_start ? this.appSettings.week_start : "Monday";
             
             this.workTimeByWeek = {};
             
             for (let submission of this.submittedSubmissions){
                 
+                /*
                 let submissionDate = moment(submission.submission_date);
                 if (submissionDate.format("dddd") === "Sunday"){
                     submissionDate.subtract(1, "days");
@@ -180,6 +200,20 @@ export class SubmissionsPage  {
                 if (submissionWeek.format("dddd") === "Sunday"){
                     submissionWeek.add(1, "days");
                 }  
+                */
+
+                let submissionDate = moment(submission.submission_date).startOf("week").day(startDay);
+                let currentDay = moment(submission.submission_date);
+
+                if (submissionDate.isAfter(currentDay)){
+                    submissionDate.subtract(1, "weeks");
+
+                }
+
+
+                let submissionWeek = moment(submissionDate);
+
+
                 
                 let submissionWeekFormatted = submissionWeek.format("YYYY-MM-DD");
                 
@@ -242,6 +276,9 @@ export class SubmissionsPage  {
             
             
             let dailyWorkTime = 0;
+
+            let dailyNoBreakCount = 0;
+            let dailySubmissionCount = 0;
             
             for (let submission of this.submissions){
                 
@@ -254,6 +291,10 @@ export class SubmissionsPage  {
                     let workTime = moment.duration(moment(endDate).diff(moment(startDate))).asMinutes();
 
                     dailyWorkTime += workTime;
+
+                    if (submission.no_break){dailyNoBreakCount += 1}
+                    dailySubmissionCount += 1;
+
                 }
             }
             
@@ -269,6 +310,9 @@ export class SubmissionsPage  {
 
                     dailyWorkTime += workTime;
 
+                    if (submission.no_break){dailyNoBreakCount += 1}
+                    dailySubmissionCount += 1;
+
                 }
                 
             }            
@@ -277,6 +321,10 @@ export class SubmissionsPage  {
             if (dailyWorkTime > 0){
                 //subtract breaks
                 dailyWorkTime = dailyWorkTime - this.breakTime;
+
+                if (dailyNoBreakCount > 0 && dailySubmissionCount === dailyNoBreakCount){
+                        dailyWorkTime = dailyWorkTime + this.breakTime; 
+                }
             
                 if (dailyWorkTime < 0){dailyWorkTime = 0;}
             }

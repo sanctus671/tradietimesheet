@@ -29,4 +29,15 @@ plugins/android.json
 plugins/ios.json
 $RECYCLE.BIN/
 
-www/
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
+/src
+/tsconfig.json
+/tslint.json
+/nbproject
+/.editorconfig
+/ionic.config.json
+/package.json
+/package-lock.json
+/e2e

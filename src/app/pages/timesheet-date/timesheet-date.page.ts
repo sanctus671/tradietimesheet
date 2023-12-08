@@ -54,7 +54,7 @@ export class TimesheetDatePage implements OnInit {
                 this.ngZone.run(() => {
 
                     if (appSettings.break_time){
-                        this.breakTime = appSettings.break_time;
+                        this.breakTime = parseFloat(appSettings.break_time);
                     }
 
                 });
@@ -100,6 +100,9 @@ export class TimesheetDatePage implements OnInit {
         
             let weekdayDate = this.formatDatabase(this.selectedDate);
             let dailyWorkTime = 0;
+
+            let dailyNoBreakCount = 0;
+            let dailySubmissionCount = 0;
             
             for (let submission of this.submissions){
 
@@ -109,6 +112,10 @@ export class TimesheetDatePage implements OnInit {
                     let workTime = moment.duration(moment(endDate).diff(moment(startDate))).asMinutes();
 
                     dailyWorkTime += workTime;
+
+
+                    if (submission.no_break){dailyNoBreakCount += 1}
+                    dailySubmissionCount += 1;
                 }
             }
             
@@ -123,6 +130,10 @@ export class TimesheetDatePage implements OnInit {
 
                     dailyWorkTime += workTime;
 
+
+                    if (submission.no_break){dailyNoBreakCount += 1}
+                    dailySubmissionCount += 1;
+
                 }
                 
             }            
@@ -131,6 +142,15 @@ export class TimesheetDatePage implements OnInit {
             if (dailyWorkTime > 0){
                 //subtract breaks
                 dailyWorkTime = dailyWorkTime - this.breakTime;
+
+
+
+                if (dailyNoBreakCount > 0 && dailySubmissionCount === dailyNoBreakCount){
+                    dailyWorkTime = dailyWorkTime + this.breakTime; 
+                }
+
+
+
                 if (dailyWorkTime < 0){dailyWorkTime = 0;}
             }
             

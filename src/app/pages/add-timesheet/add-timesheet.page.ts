@@ -27,12 +27,13 @@ export class AddTimesheetPage implements OnInit {
         
         this.appSettings = {};
         
-        this.fieldLabels = {site_name:"Site Name", total_rubbish: "Materials Used", comments: "Comments"};
+        this.fieldLabels = {site_name:"Site Name", total_rubbish: "Materials Used", comments: "Comments", break_toggle:false};
         
 		let timezoneOffset = -(new Date().getTimezoneOffset())/60;
-		let initialDate = moment().format("YYYY-MM-DD") + "T07:00:00+" + timezoneOffset + ":00";
+		//let initialDate = moment().format("YYYY-MM-DD") + "T07:00:00+" + timezoneOffset + ":00";
 		
-        this.timesheet = {start_time_raw:initialDate};
+        //this.timesheet = {start_time_raw:initialDate};
+        this.timesheet = {};
 		
         this.submissions = [];
         this.submittedSubmissions = [];
