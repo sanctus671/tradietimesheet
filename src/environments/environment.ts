@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    apiUrl:"http://13.211.159.86/api/public/api"
+    apiUrl:"http://api.tradietimesheet.com/api/public/api"
 };
 
 /*

@@ -3,5 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">13.211.159.86</domain>
+        <domain includeSubdomains="true">52.65.155.195</domain>
+        <domain includeSubdomains="true">api.tradietimesheet.com</domain>
     </domain-config>
 </network-security-config>

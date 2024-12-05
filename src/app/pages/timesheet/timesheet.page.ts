@@ -531,60 +531,72 @@ export class TimesheetPage implements OnInit {
     }
     
     
-    private submitSubmission(index, submissions, submissionsTotal){
-        
-        
-        if (index < 0){
+    private submitSubmission(index, submissions, submissionsTotal, retryCount = 0, maxRetries = 3) {
+        if (index < 0) {
             this.getSubmissions();
             this.getSubmittedSubmissions();
-            
+    
             setTimeout(() => {
                 this.loader.dismiss();
-
-                let alert = this.alertCtrl.create({
-                     header: 'Success',
-                     message: 'Your timesheets have been submitted',
-                     buttons: [
-                         {
-                             text: 'Dismiss',
-                             role: 'cancel',
-                             handler: data => {
-                             }
-                         }                              
-                     ]           
-                 }).then((el) => {
-                     el.present();
-                 });   
-            },1000);             
-            
-  
-            this.submissionService.sendWeeklyTimesheet(this.formatDatabase(this.currentWeek)).then(() => {
-
-            });
-            
-            
+    
+                this.alertCtrl.create({
+                    header: 'Success',
+                    message: 'Your timesheets have been submitted',
+                    buttons: [
+                        {
+                            text: 'Dismiss',
+                            role: 'cancel',
+                        }
+                    ]
+                }).then((el) => {
+                    el.present();
+                });
+            }, 1000);
+    
+            this.submissionService.sendWeeklyTimesheet(this.formatDatabase(this.currentWeek))
+                .then(() => {
+                    console.log('Weekly timesheet sent successfully.');
+                })
+                .catch((err) => {
+                    console.error('Error sending weekly timesheet:', err);
+                });
+    
             return;
         }
-      
-        this.loader.message = "Submitting " + (submissionsTotal - index) + "/" + submissionsTotal + " timesheets. Please wait...";
-
-        this.submissionService.createSubmission(this.submissions[index]).then((data) => {
-            
-
-            
-            submissions.splice(index,1);
-
-                
-            this.submissionService.updateLocalSubmissions(submissions).then(() => {
-                this.submitSubmission(index - 1, submissions, submissionsTotal);
-            }).catch(() => {
-                this.submitSubmission(index - 1, submissions, submissionsTotal);
+    
+        this.loader.message = `Submitting ${submissionsTotal - index}/${submissionsTotal} timesheets. Please wait...`;
+    
+        this.submissionService.createSubmission(this.submissions[index])
+            .then(() => {
+                console.log(`Submission ${submissionsTotal - index} created successfully.`);
+    
+                // Remove the successfully submitted item from the list
+                submissions.splice(index, 1);
+    
+                this.submissionService.updateLocalSubmissions(submissions)
+                    .then(() => {
+                        this.submitSubmission(index - 1, submissions, submissionsTotal);
+                    })
+                    .catch((err) => {
+                        console.error('Error updating local submissions:', err);
+                        this.submitSubmission(index - 1, submissions, submissionsTotal);
+                    });
+            })
+            .catch((err) => {
+                console.error(`Error creating submission ${submissionsTotal - index}:`, err);
+    
+                if (retryCount < maxRetries) {
+                    console.log(`Retrying submission ${submissionsTotal - index}. Attempt ${retryCount + 1} of ${maxRetries}.`);
+                    // Retry the same submission
+                    this.submitSubmission(index, submissions, submissionsTotal, retryCount + 1, maxRetries);
+                } else {
+                    console.error(`Max retries reached for submission ${submissionsTotal - index}. Moving to next.`);
+                    // Move to the next submission if retries are exhausted
+                    this.submitSubmission(index - 1, submissions, submissionsTotal);
+                }
             });
-            
-        }).catch(() => {
-            this.submitSubmission(index - 1, submissions, submissionsTotal);
-        });       
     }
+    
     
     public dateChanged(ev){
         
